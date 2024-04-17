@@ -1,3 +1,4 @@
+const axios = require("axios");
 const express = require("express");
 const app = express();
 
@@ -13,16 +14,26 @@ app.get("/", (req, res) => {
 });
 
 // Handle the /weather route
-app.get("/weather", (req, res) => {
+app.get("/weather", async (req, res) => {
   // Get the city from the query parameters
   const city = req.query.city;
-  const apiKey = process.env.OPEN_WEATHER_API_KEY;
+  const apiKey = `926f43edbe728f9577b9613c8fbe3c8b`;
 
   // Add your logic here to fetch weather data from the API
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${apiKey}`
-  ``;
+  const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${apiKey}`;
+  let weather;
+  let error = null;
+  try {
+    const response = await axios.get(apiUrl);
+    console.log(response)
+    weather = response.data;
+    console.log(weather)
+  } catch (error) {
+    weather = null;
+    error = "Error, please try again"
+  }
   // Render the index template with the weather data and error message
-  res.render("index", { weather: null, error: null });
+  res.render("index", { weather, error });
 });
 
 // Start the server and listen on port 3000 or the value of the PORT environment variable
